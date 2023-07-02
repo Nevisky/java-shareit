@@ -19,6 +19,7 @@ import java.util.Collection;
 public class UserController {
 
     private final UserService userService;
+
     @PostMapping
     public UserDto create(@Valid @RequestBody UserDto userDto) {
         log.info("Создан пользователь user={}", userDto);
@@ -26,11 +27,11 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto update(@Valid @RequestBody UserDto userDto,
-                           @PathVariable("userId") Long userId){
+    public UserDto update(@Valid @RequestBody UserDto userDto, @PathVariable("userId") Long userId) {
         log.info("Обновлен пользователь userId={}", userId);
-        return userService.updateUser(userId,userDto);
+        return userService.updateUser(userId, userDto);
     }
+
     @GetMapping("/{userId}")
     public UserDto getById(@PathVariable("userId") Long userId) {
         log.info("Найден пользователь userId={}", userId);
@@ -45,7 +46,7 @@ public class UserController {
 
     @GetMapping
     public Collection<UserDto> findAllUsers() {
-        log.info("Найдено пользователей userId={}",userService.findAllUsers().size());
+        log.info("Найдено пользователей userId={}", userService.findAllUsers().size());
         return userService.findAllUsers();
     }
 

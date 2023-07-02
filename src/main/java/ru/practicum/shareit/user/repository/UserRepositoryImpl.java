@@ -13,24 +13,22 @@ import java.util.*;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class UserRepositoryImpl implements UserRepository{
-
-    private long id = 0;
+public class UserRepositoryImpl implements UserRepository {
 
     private static final Map<Long, User> users = new HashMap<>();
-
-    private static final Map<Long,String> emails = new HashMap<>();
+    private static final Map<Long, String> emails = new HashMap<>();
+    private long id = 0;
 
     @Override
     public User addUser(User user) {
-        if(emails.containsValue(user.getEmail())){
+        if (emails.containsValue(user.getEmail())) {
             throw new EmailAlreadyExistException((String.format("Пользователь с данным e-mail = %s существует, введите другую почту.", user.getEmail())));
         }
-        if(user.getEmail() == null){
+        if (user.getEmail() == null) {
             throw new ValidationException("Поле e-mail пустое");
         }
         user.setId(++id);
-        users.put(user.getId(),user);
+        users.put(user.getId(), user);
         emails.put(user.getId(), user.getEmail());
         return user;
     }

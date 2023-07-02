@@ -11,31 +11,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemRepositoryImpl implements ItemRepository {
 
-    private final Map<Long,Item> items = new HashMap<>();
+    private final Map<Long, Item> items = new HashMap<>();
+    private final Map<Long, Collection<Long>> usersItems = new HashMap<>();
+    private Long id = 0L;
 
     public Map<Long, Collection<Long>> getUsersItems() {
         return usersItems;
     }
-
-    private final Map<Long,Collection<Long>> usersItems = new HashMap<>();
-
-    private Long id = 0L;
 
     public long getId() {
         return ++id;
     }
 
     @Override
-    public Item save(Long userId,Item item) {
+    public Item save(Long userId, Item item) {
         item.setId(getId());
-        items.put(item.getId(),item);
+        items.put(item.getId(), item);
         usersItems.put(userId, Collections.singleton(item.getId()));
         return item;
     }
 
     @Override
     public Item update(Long userId, Item item) {
-        items.put(item.getId(),item);
+        items.put(item.getId(), item);
         usersItems.put(userId, Collections.singleton(item.getId()));
         return item;
     }
@@ -47,17 +45,15 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Collection<Item> findItemFromText(String text) {
-       return items.values().stream()
-                .filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase())
-                        || item.getDescription().toLowerCase().contains((text.toLowerCase()))))
-                .filter(Item::getAvailable)
-                .collect(Collectors.toList());
+        return items.values().stream().filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase())
+                || item.getDescription().toLowerCase().contains((text.toLowerCase()))))
+                .filter(Item::getAvailable).collect(Collectors.toList());
     }
 
     @Override
     public Collection<Item> findAllItemsByUser(Long userId) {
         Collection<Item> listOfItems = new ArrayList<>();
-        usersItems.get(userId).forEach(i-> listOfItems.add(findItemById(i)));
+        usersItems.get(userId).forEach(i -> listOfItems.add(findItemById(i)));
         return listOfItems;
     }
 
