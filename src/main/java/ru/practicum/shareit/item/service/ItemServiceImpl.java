@@ -1,4 +1,5 @@
 package ru.practicum.shareit.item.service;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,10 +28,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto saveItem(Long userId, ItemDto itemDto) {
-        if(userRepository.findUserById(userId) == null){
+        if (userRepository.findUserById(userId) == null) {
             throw new ObjectNotFoundException("Запрашиваемого пользователя не существует");
         }
-        return toItemDto(itemRepository.save(userId, ItemMapper.toItem(itemDto,userRepository.findUserById(userId))));
+        return toItemDto(itemRepository.save(userId, ItemMapper.toItem(itemDto, userRepository.findUserById(userId))));
     }
 
     @Override
@@ -39,22 +40,20 @@ public class ItemServiceImpl implements ItemService {
         if (excistedItem == null) {
             throw new ObjectNotFoundException("Нет пользоваьеля с ID: " + itemId);
         }
-        if(!itemRepository.getUsersItems().containsKey(userId)){
+        if (!itemRepository.getUsersItems().containsKey(userId)) {
             throw new ObjectNotFoundException("Данная вещь не принадлежит пользователю");
         }
         Item item = Item.builder()
                 .id(itemId)
                 .name(itemDto.getName() != null ? itemDto.getName() : excistedItem.getName())
-                .description(itemDto.getDescription() != null
-                        ? itemDto.getDescription() : excistedItem.getDescription())
-                .available(itemDto.getAvailable() != null
-                        ? itemDto.getAvailable() : excistedItem.getAvailable())
+                .description(itemDto.getDescription() != null ? itemDto.getDescription() : excistedItem.getDescription())
+                .available(itemDto.getAvailable() != null ? itemDto.getAvailable() : excistedItem.getAvailable())
                 .build();
-        return ItemMapper.toItemDto(itemRepository.update(userId,item));
+        return ItemMapper.toItemDto(itemRepository.update(userId, item));
     }
 
     @Override
-    public ItemDto getItemById(Long userId,Long itemId) {
+    public ItemDto getItemById(Long userId, Long itemId) {
         return toItemDto(itemRepository.findItemById(itemId));
     }
 
