@@ -6,6 +6,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+
 @UtilityClass
 public class UserMapper {
 
