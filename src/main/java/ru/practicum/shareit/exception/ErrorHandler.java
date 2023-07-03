@@ -44,4 +44,12 @@ public class ErrorHandler {
                         error.getDefaultMessage()))
                 .collect(Collectors.toList());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handlerRawException(Exception e){
+        log.error(e.getMessage(), e);
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+    }
 }
+
