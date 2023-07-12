@@ -5,27 +5,28 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.dto.BookingDto;
 
 import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDtoWithBookingAndComments {
-    
-     Long id;
 
-     String name;
+    Long id;
 
-     String description;
+    String name;
 
-     Boolean available;
+    String description;
 
-     Long requestId;
+    Boolean available;
 
-     BookingDto lastBooking;
+    Long requestId;
 
-     BookingDto nextBooking;
+    BookingDto lastBooking;
 
-     List<CommentDto> comments;
+    BookingDto nextBooking;
+
+    List<CommentDto> comments;
 
 }
