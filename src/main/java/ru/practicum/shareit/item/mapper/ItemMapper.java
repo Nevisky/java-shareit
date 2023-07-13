@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.mapper;
 
-import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.util.BookingStatus;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@UtilityClass
+
 public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
         return ItemDto.builder()
