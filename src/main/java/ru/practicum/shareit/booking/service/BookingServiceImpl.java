@@ -68,9 +68,9 @@ public class BookingServiceImpl implements BookingService {
             throw new ObjectNotFoundException("Нельзя забронировать свою вещь");
         }
 
-        Booking booking = bookingRepository.save(BookingMapper.toBooking(bookingDto, item, user));
+        Booking booking = BookingMapper.toBooking(bookingDto, item, user);
         booking.setStatus(BookingStatus.WAITING);
-        return BookingMapper.toBookingResponse(booking);
+        return BookingMapper.toBookingResponse(bookingRepository.save(booking));
 
     }
 
@@ -121,7 +121,7 @@ public class BookingServiceImpl implements BookingService {
                 usersBooking = bookingRepository.findByBookerIdOrderByStartDesc(userId);
                 break;
             case CURRENT:
-                usersBooking = bookingRepository.findByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartAsc(userId, currentTime, currentTime);
+                usersBooking = bookingRepository.findByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userId, currentTime, currentTime);
                 break;
             case PAST:
                 usersBooking = bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(userId, currentTime);
