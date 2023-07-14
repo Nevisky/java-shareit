@@ -88,6 +88,7 @@ public class ItemServiceImpl implements ItemService {
         List<Comment> comments = commentsRepository.findByItemId(itemId);
         return toItemDtoWBAC(item, user, bookings, comments);
     }
+
     @Transactional(readOnly = true)
     @Override
     public List<ItemDtoWithBookingAndComments> getItemDtoByUserId(Long userId) {
