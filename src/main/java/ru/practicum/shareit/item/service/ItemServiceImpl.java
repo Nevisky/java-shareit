@@ -88,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
         List<Comment> comments = commentsRepository.findByItemId(itemId);
         return toItemDtoWBAC(item, user, bookings, comments);
     }
-
+    @Transactional(readOnly = true)
     @Override
     public List<ItemDtoWithBookingAndComments> getItemDtoByUserId(Long userId) {
         User user = validateUser(userId);
@@ -121,6 +121,7 @@ public class ItemServiceImpl implements ItemService {
         return listToItemDto(itemRepository.search(text));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<ItemDto> getItemsDtoByRequest(String text) {
         if (text.isBlank() || text.isEmpty()) {

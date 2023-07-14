@@ -7,11 +7,13 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
 @Table(name = "COMMENTS")
 @Entity
 public class Comment {

@@ -6,14 +6,12 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
-/**
- * TODO Sprint add-controllers.
- */
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
 @Entity
 @Table(name = "ITEMS")
 public class Item {

@@ -109,7 +109,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ObjectNotFoundException("Запрашиваемая информация доступна только владельцу");
         }
     }
-
+    @Transactional(readOnly = true)
     @Override
     public Collection<BookingResponse> getAllUsersBookingByState(Long userId, String state) {
         validateUser(userId);
@@ -140,7 +140,7 @@ public class BookingServiceImpl implements BookingService {
         }
         return usersBooking.stream().map(BookingMapper::toBookingResponse).collect(Collectors.toList());
     }
-
+    @Transactional(readOnly = true)
     @Override
     public Collection<BookingResponse> getAllBookingsForItemsOfUser(Long userId, String state) {
         validateUser(userId);
