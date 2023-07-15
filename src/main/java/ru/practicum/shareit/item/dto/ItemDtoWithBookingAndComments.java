@@ -2,13 +2,16 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.booking.dto.BookingDto;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemDto {
+public class ItemDtoWithBookingAndComments {
 
     Long id;
 
@@ -18,9 +21,12 @@ public class ItemDto {
 
     Boolean available;
 
-    Long owner;
+    Long requestId;
 
-    Long request;
+    BookingDto lastBooking;
+
+    BookingDto nextBooking;
+
+    List<CommentDto> comments;
 
 }
-

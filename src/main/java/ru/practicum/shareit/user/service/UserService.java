@@ -8,7 +8,7 @@ public interface UserService {
 
     UserDto saveUser(UserDto userDto);
 
-    UserDto updateUser(Long userId,UserDto userDto);
+    UserDto updateUser(Long userId, UserDto userDto);
 
     UserDto findUserById(Long userId);
 

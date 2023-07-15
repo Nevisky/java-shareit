@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -51,6 +52,12 @@ public class ErrorHandler {
     public ErrorResponse handlerRawException(Exception e) {
         log.error(e.getMessage(), e);
         return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleValidateStateException(final ValidateStateException e) {
+        return Map.of("error", e.getMessage());
     }
 
 }

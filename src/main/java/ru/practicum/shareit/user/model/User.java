@@ -1,32 +1,33 @@
 package ru.practicum.shareit.user.model;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 
-/**
- * TODO Sprint add-controllers.
- */
-
-@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
+@Entity
+@Table(name = "USERS")
 public class User {
 
-    @Positive
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
     Long id;
 
-    @NotBlank
+    @Column(name = "name", nullable = false)
     String name;
 
-    @NotBlank @Email(regexp = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = "Не соответствует формату email адреса")
+    @Column(name = "email", nullable = false, unique = true)
+    @Email(regexp = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",
+            message = "Не соответствует формату email адреса")
+
     String email;
 
 }

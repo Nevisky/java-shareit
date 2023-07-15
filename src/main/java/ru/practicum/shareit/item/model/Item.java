@@ -2,39 +2,38 @@ package ru.practicum.shareit.item.model;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.persistence.*;
 
-/**
- * TODO Sprint add-controllers.
- */
-@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
+@Entity
+@Table(name = "ITEMS")
 public class Item {
-
-    @Positive
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_id", nullable = false)
     Long id;
 
-    @NotBlank(message = "Parameter name is empty")
+    @Column(name = "name", nullable = false)
     String name;
 
-    @NotBlank
-    @Size(max = 200, message = "length of description is more then 200 symbols")
+    @Column(name = "description", nullable = false)
     String description;
 
-    @NotNull(message = "Parameter name is NULL")
+    @Column(name = "is_available", nullable = false)
     Boolean available;
 
-    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
     User owner;
 
-    ItemRequest request;
+    @Column(name = "request_id")
+    Long request;
 
 }
