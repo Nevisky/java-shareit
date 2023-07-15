@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBookingAndComments;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -24,16 +25,36 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .owner(item.getOwner().getId())
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 
     public static Item toItem(ItemDto dto, User user) {
+
+        Item item = new Item();
+        item.setId(dto.getId());
+        item.setName(dto.getName());
+        item.setDescription(dto.getDescription());
+        item.setAvailable(dto.getAvailable());
+        item.setOwner(user);
+        if(dto.getRequestId() != null) {
+            ItemRequest itemRequest = new ItemRequest();
+            itemRequest.setId(dto.getRequestId());
+            item.setRequest(itemRequest);
+        }
+
+        /*
         return Item.builder()
                 .id(dto.getId())
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .available(dto.getAvailable())
-                .owner(user).build();
+                .owner(user)
+                .request(null)
+                .build();
+
+         */
+        return item;
     }
 
     public static Collection<ItemDto> listToItemDto(Collection<Item> items) {
@@ -63,7 +84,7 @@ public class ItemMapper {
                 .id(item.getId()).name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .requestId(item.getRequest())
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .lastBooking(lastBooking != null ? BookingMapper.toBookingDto(lastBooking) : null)
                 .nextBooking(nextBooking != null ? BookingMapper.toBookingDto(nextBooking) : null)
                 .comments(dtoCommentsList).build();

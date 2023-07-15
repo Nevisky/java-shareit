@@ -52,10 +52,10 @@ public class ItemServiceImpl implements ItemService {
         if (userRepository.findById(userId).isEmpty()) {
             throw new ObjectNotFoundException("Запрашиваемого пользователя не существует");
         }
-
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = validateUser(userId);
         itemDto.setOwner(userId);
-        Item item = itemRepository.save(ItemMapper.toItem(itemDto, user));
+        Item item = ItemMapper.toItem(itemDto, user);
+        item = itemRepository.save(item);
         return ItemMapper.toItemDto(item);
     }
 
@@ -86,6 +86,7 @@ public class ItemServiceImpl implements ItemService {
         User user = validateUser(userId);
         List<Booking> bookings = bookingRepository.findByItemId(itemId);
         List<Comment> comments = commentsRepository.findByItemId(itemId);
+
         return toItemDtoWBAC(item, user, bookings, comments);
     }
 

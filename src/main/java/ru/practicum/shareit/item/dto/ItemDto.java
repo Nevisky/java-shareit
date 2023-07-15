@@ -20,7 +20,7 @@ public class ItemDto {
 
     Long owner;
 
-    Long request;
+    Long requestId;
 
 }
 
