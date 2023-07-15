@@ -36,8 +36,8 @@ public class BookingController {
 
     @GetMapping("/{bookingId}")
     public BookingResponse findByBookingId(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                           @PathVariable("bookingId") Long bookingId){
-        log.info("Получение бронирования по id={}",bookingId);
+                                           @PathVariable("bookingId") Long bookingId) {
+        log.info("Получение бронирования по id={}", bookingId);
         return bookingService.getBookingById(userId, bookingId);
     }
 
@@ -48,7 +48,7 @@ public class BookingController {
                                                                   @Min(value = 0,message = "Меньше нуля") int from,
                                                                   @RequestParam(defaultValue = "20",required = false)
                                                                   @Positive int size) {
-        log.info("Получение списка всех бронирований пользователя id={}",userId);
+        log.info("Получение списка всех бронирований пользователя id={}", userId);
         return bookingService.getAllUsersBookingByState(userId, state, from, size);
     }
 
@@ -58,8 +58,9 @@ public class BookingController {
                                                                      @RequestParam(defaultValue = "0",required = false)
                                                                          @Min(value = 0,message = "Меньше нуля")@Positive int from,
                                                                      @RequestParam(defaultValue = "10",required = false)
-                                                                     @Positive int size){
+                                                                     @Positive int size) {
         log.info("Получение списка бронирований для всех вещей пользователя id={}",userId);
         return bookingService.getAllBookingsForItemsOfUser(userId, state, from, size);
     }
+
 }

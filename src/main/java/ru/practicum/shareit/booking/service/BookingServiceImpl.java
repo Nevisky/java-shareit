@@ -98,7 +98,6 @@ public class BookingServiceImpl implements BookingService {
         return BookingMapper.toBookingResponse(booking);
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public BookingResponse getBookingById(Long userId, Long bookingId) {
@@ -115,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional(readOnly = true)
     @Override
     public Collection<BookingResponse> getAllUsersBookingByState(Long userId, String state, int from, int size) {
-        if(from < 0) {
+        if (from < 0) {
             throw new ValidationException("Заданная страница меньше 0");
         }
         validateUser(userId);
@@ -152,7 +151,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional(readOnly = true)
     @Override
     public Collection<BookingResponse> getAllBookingsForItemsOfUser(Long userId, String state, int from, int size) {
-        if(from < 0) {
+        if (from < 0) {
             throw new ValidationException("Заданная страница меньше 0");
         }
         validateUser(userId);
@@ -184,7 +183,6 @@ public class BookingServiceImpl implements BookingService {
                 throw new ValidateStateException("Unknown state: UNSUPPORTED_STATUS");
         }
         return bookings.stream().map(BookingMapper::toBookingResponse).collect(Collectors.toList());
-
     }
 
     private State changeStringToState(String state) {
@@ -194,4 +192,5 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
+
 }

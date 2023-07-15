@@ -83,13 +83,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Transactional(readOnly = true)
     @Override
     public List<ItemRequestWithItems> getAllRequestsByPageable(Long userId, int from, int size) {
-        if(from < 0) {
+        if (from < 0) {
             throw new ValidationException("Страница не может быть меньше 0");
         }
         validateUser(userId);
         Sort sort = Sort.by(Sort.Direction.DESC,"created");
         PageRequest page = PageRequest.of(from / size, size, sort);
-        List<ItemRequest> itemsList = itemRequestRepository.findAllByRequestorIdNot(userId,page);
+        List<ItemRequest> itemsList = itemRequestRepository.findAllByRequestorIdNot(userId, page);
         return createItemsForRequest(itemsList);
     }
 
@@ -103,7 +103,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .stream()
                 .map(ItemMapper::toItemDto).collect(Collectors.toList());
 
-        return ItemRequestMapper.toItemRequestWithItems(itemRequest,itemDtoList);
+        return ItemRequestMapper.toItemRequestWithItems(itemRequest, itemDtoList);
     }
 
 }

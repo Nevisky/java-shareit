@@ -22,7 +22,6 @@ public class ItemRequestController {
     @PostMapping
     public ItemRequestDto createRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
                                         @Valid @RequestBody ItemRequestDto itemRequestDto) {
-
         log.info("Создан запрос на предмет от пользователя user_id = {}", userId);
         return itemRequestService.createRequest(itemRequestDto,userId);
     }
@@ -40,12 +39,14 @@ public class ItemRequestController {
                                                      @Min(0) @Positive int from,
                                                      @RequestParam(defaultValue = "20",required = false)
                                                      @Positive int size) {
+        log.info("Создан запрос на получение всех предметов");
         return itemRequestService.getAllRequestsByPageable(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestWithItems getRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                @PathVariable Long requestId) {
+        log.info("Создан запрос на получение предмета по id = {}", requestId);
         return itemRequestService.getRequestById(userId,requestId);
     }
 
