@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class ItemRequestDto {
 
     Long id;
+
     @NotBlank(message = "Добавьте описание")
     String description;
 

@@ -19,6 +19,7 @@ import java.util.List;
 public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
+
     @PostMapping
     public ItemRequestDto createRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
                                         @Valid @RequestBody ItemRequestDto itemRequestDto) {
@@ -28,7 +29,6 @@ public class ItemRequestController {
 
     @GetMapping
     public List<ItemRequestWithItems> getItemRequestResponseByRequestorId(@RequestHeader("X-Sharer-User-Id") Long userId) {
-
         log.info("Создан запрос на получение всех предметов от пользователя user_id = {}", userId);
         return itemRequestService.getItemRequestByRequestorId(userId);
     }

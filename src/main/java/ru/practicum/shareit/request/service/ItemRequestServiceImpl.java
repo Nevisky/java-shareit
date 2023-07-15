@@ -46,10 +46,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto createRequest(ItemRequestDto itemRequestDto, Long userId) {
-        if(validateUser(userId) == null) {
+        if (validateUser(userId) == null) {
             throw new ObjectNotFoundException("Пользователя не существует");
         }
-        if(itemRequestDto.getDescription().isBlank() || itemRequestDto.getDescription().isEmpty()) {
+        if (itemRequestDto.getDescription().isBlank() || itemRequestDto.getDescription().isEmpty()) {
             throw new ValidationException("Описание не может быть пустым");
         }
         LocalDateTime now = LocalDateTime.now();
@@ -75,8 +75,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .collect(Collectors.toList());
 
         return itemRequests.stream()
-                .map(ItemRequest -> ItemRequestMapper
-                        .toItemRequestWithItems(ItemRequest, itemDtoList)).
+                .map(ItemRequest -> ItemRequestMapper.toItemRequestWithItems(ItemRequest, itemDtoList)).
                 collect(Collectors.toList());
     }
 
