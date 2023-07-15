@@ -75,8 +75,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .collect(Collectors.toList());
 
         return itemRequests.stream()
-                .map(ItemRequest -> ItemRequestMapper.toItemRequestWithItems(ItemRequest, itemDtoList)).
-                collect(Collectors.toList());
+                .map(ItemRequest -> ItemRequestMapper.toItemRequestWithItems(ItemRequest, itemDtoList))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
