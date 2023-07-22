@@ -16,7 +16,7 @@ public class CommentMapper {
                 .id(commentDto.getId())
                 .text(commentDto.getText())
                 .item(item).author(user)
-                .created(LocalDateTime.now())
+                .createdDate(LocalDateTime.now())
                 .build();
     }
 
@@ -26,7 +26,7 @@ public class CommentMapper {
                 .text(comment.getText())
                 .itemId(comment.getItem().getId())
                 .authorName(comment.getAuthor().getName())
-                .created(comment.getCreated())
+                .created(comment.getCreatedDate())
                 .build();
     }
 

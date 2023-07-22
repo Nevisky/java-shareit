@@ -2,6 +2,7 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestWithItems;
@@ -12,10 +13,12 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
+
 @RequiredArgsConstructor
 @Slf4j
 @RestController
 @RequestMapping(path = "/requests")
+@Validated
 public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
@@ -30,13 +33,13 @@ public class ItemRequestController {
     @GetMapping
     public List<ItemRequestWithItems> getItemRequestResponseByRequestorId(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Создан запрос на получение всех предметов от пользователя user_id = {}", userId);
-        return itemRequestService.getItemRequestByRequestorId(userId);
+        return itemRequestService.getItemsRequestByRequestorId(userId);
     }
 
     @GetMapping("/all")
     public List<ItemRequestWithItems> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                      @RequestParam(defaultValue = "0",required = false)
-                                                     @Min(0) @Positive int from,
+                                                     @Min(0) int from,
                                                      @RequestParam(defaultValue = "20",required = false)
                                                      @Positive int size) {
         log.info("Создан запрос на получение всех предметов");

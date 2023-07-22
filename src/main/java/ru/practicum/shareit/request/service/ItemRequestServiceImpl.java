@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -46,12 +45,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto createRequest(ItemRequestDto itemRequestDto, Long userId) {
-        if (validateUser(userId) == null) {
-            throw new ObjectNotFoundException("Пользователя не существует");
-        }
-        if (itemRequestDto.getDescription().isBlank() || itemRequestDto.getDescription().isEmpty()) {
-            throw new ValidationException("Описание не может быть пустым");
-        }
+
         LocalDateTime now = LocalDateTime.now();
         ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto,validateUser(userId));
         itemRequest.setRequestor(validateUser(userId));
@@ -61,7 +55,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemRequestWithItems> getItemRequestByRequestorId(Long userId) {
+    public List<ItemRequestWithItems> getItemsRequestByRequestorId(Long userId) {
         validateUser(userId);
         List<ItemRequest> itemRequests = itemRequestRepository.findByRequestorId(userId);
         return createItemsForRequest(itemRequests);
@@ -82,9 +76,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Transactional(readOnly = true)
     @Override
     public List<ItemRequestWithItems> getAllRequestsByPageable(Long userId, int from, int size) {
-        if (from < 0) {
-            throw new ValidationException("Страница не может быть меньше 0");
-        }
         validateUser(userId);
         Sort sort = Sort.by(Sort.Direction.DESC,"created");
         PageRequest page = PageRequest.of(from / size, size, sort);

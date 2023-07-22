@@ -45,12 +45,12 @@ public class BookingServiceImpl implements BookingService {
 
     private Item validateItem(Long itemId) {
         return itemRepository.findById(itemId).orElseThrow(() -> new ObjectNotFoundException(
-                String.format("Предмет с id = %d не найден", itemId)));
+                String.format("Предмет с id = %d не найден.", itemId)));
     }
 
     private Booking validateBooking(Long bookingId) {
         return bookingRepository.findById(bookingId).orElseThrow(() -> new ObjectNotFoundException(String.format(
-                "Бронирование с id = %d не найдено",bookingId)));
+                "Бронирование с id = %d не найдено.", bookingId)));
     }
 
     @Override
@@ -72,18 +72,24 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = BookingMapper.toBooking(bookingDto, item, user);
         booking.setStatus(BookingStatus.WAITING);
-        return BookingMapper.toBookingResponse(bookingRepository.save(booking));
+        bookingRepository.save(booking);
+        return BookingMapper.toBookingResponse(booking);
 
     }
 
     @Override
     public BookingResponse updateBookingStatus(Long userId, Long bookingId, boolean approved) {
         Booking booking = validateBooking(bookingId);
+        Long ownerId = booking.getItem().getOwner().getId();
+        if(!ownerId.equals(userId)) {
+            throw new ObjectNotFoundException("Вы не являетесь владельцем предмета.");
+        }
+
         if (approved && booking.getStatus() == BookingStatus.APPROVED) {
-            throw new ValidationException(String.format("Бронь с id = %d уже существует",booking.getItem().getId()));
+            throw new ValidationException(String.format("Бронь с id = %d уже существует.",booking.getItem().getId()));
         }
         if (!approved && booking.getStatus() == BookingStatus.REJECTED) {
-            throw new ValidationException(String.format("Бронь с id = %d уже отмеенна",booking.getItem().getId()));
+            throw new ValidationException(String.format("Бронь с id = %d уже отменена.",booking.getItem().getId()));
         }
         if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
@@ -114,9 +120,6 @@ public class BookingServiceImpl implements BookingService {
     @Transactional(readOnly = true)
     @Override
     public Collection<BookingResponse> getAllUsersBookingByState(Long userId, String state, int from, int size) {
-        if (from < 0) {
-            throw new ValidationException("Заданная страница меньше 0");
-        }
         validateUser(userId);
         State transformState = changeStringToState(state);
         LocalDateTime currentTime = LocalDateTime.now();
@@ -151,9 +154,6 @@ public class BookingServiceImpl implements BookingService {
     @Transactional(readOnly = true)
     @Override
     public Collection<BookingResponse> getAllBookingsForItemsOfUser(Long userId, String state, int from, int size) {
-        if (from < 0) {
-            throw new ValidationException("Заданная страница меньше 0");
-        }
         validateUser(userId);
         State transformState = changeStringToState(state);
         LocalDateTime now = LocalDateTime.now();

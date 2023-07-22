@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
@@ -92,9 +94,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemDtoWithBookingAndComments> getItemDtoByUserId(Long userId) {
+    public List<ItemDtoWithBookingAndComments> getItemDtoByUserId(Long userId, int from, int size) {
+        PageRequest pageRequest = PageRequest.of(from / size, size, Sort.by("id"));
         User user = validateUser(userId);
-        List<Item> usersItems = itemRepository.findItemByOwnerId(user.getId());
+        List<Item> usersItems = itemRepository.findItemByOwnerId(user.getId(), pageRequest);
         List<Booking> bookings = bookingRepository.findByItemOwnerIdOrderByStartDesc(userId);
         List<Comment> comments = commentsRepository.findByItemIdIn(usersItems.stream()
                 .map(Item::getId).collect(Collectors.toList()));
@@ -109,7 +112,7 @@ public class ItemServiceImpl implements ItemService {
         Booking booking = bookingRepository.findTopByStatusNotLikeAndItemIdAndBookerIdOrderByEndAsc(BookingStatus.REJECTED, itemId, userId);
         Comment comment = CommentMapper.toComment(commentDto, user, item);
         if (booking == null) {
-            throw new ValidationException(String.format("Предмет с id = %d не была забронирована пользователем с id = %d", itemId, userId));
+            throw new ValidationException(String.format("Предмет с id = %d не был забронирован пользователем с id = %d", itemId, userId));
         }
         if (booking.getStart().isAfter(LocalDateTime.now())) {
             throw new ValidationException("Неправильная дата бронирования");
@@ -117,27 +120,22 @@ public class ItemServiceImpl implements ItemService {
         return CommentMapper.commentDto(commentsRepository.save(comment));
     }
 
-
-    @Override
-    public Collection<ItemDto> search(String text) {
-        return listToItemDto(itemRepository.search(text));
-    }
-
     @Transactional(readOnly = true)
     @Override
-    public Collection<ItemDto> getItemsDtoByRequest(String text) {
+    public Collection<ItemDto> getItemsDtoByRequest(String text, int from, int size) {
+        PageRequest pageRequest = PageRequest.of(from / size, size, Sort.by("id"));
         if (text.isBlank() || text.isEmpty()) {
             return Collections.emptyList();
         }
-        return ItemMapper.listToItemDto(itemRepository.search(text));
+        return ItemMapper.listToItemDto(itemRepository.search(text,pageRequest));
     }
-
-    private User validateUser(Long userId) {
+    @Override
+    public User validateUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(String.format(
                 "Пользователь с id = %d не найден", userId)));
     }
-
-    private Item validateItem(Long itemId) {
+    @Override
+    public Item validateItem(Long itemId) {
         return itemRepository.findById(itemId).orElseThrow(() -> new ObjectNotFoundException(String.format(
                 "Предмет с id = %d не найден", itemId)));
     }

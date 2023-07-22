@@ -10,7 +10,7 @@ public interface ItemRequestService {
 
     ItemRequestDto createRequest(ItemRequestDto itemRequestDto, Long userId);
 
-   List<ItemRequestWithItems> getItemRequestByRequestorId(Long userId);
+   List<ItemRequestWithItems> getItemsRequestByRequestorId(Long userId);
 
     List<ItemRequestWithItems> getAllRequestsByPageable(Long userId, int from, int size);
 

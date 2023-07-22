@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingResponse;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.Collection;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
@@ -22,7 +24,7 @@ public class BookingController {
     @PostMapping
     public BookingResponse create(@RequestHeader("X-Sharer-User-Id") Long userId,
                                   @Valid @RequestBody BookingDto bookingDto) {
-        log.info("Бронирование Booking={}", bookingDto.getItemId());
+        log.info("Бронирование Booking={}", bookingDto.getId());
         return bookingService.saveBooking(userId, bookingDto);
     }
 
@@ -44,9 +46,9 @@ public class BookingController {
     @GetMapping
     public Collection<BookingResponse> findAllUsersBookingByState(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                                   @RequestParam(defaultValue = "ALL") String state,
-                                                                  @RequestParam(defaultValue = "0",required = false)
-                                                                  @Min(value = 0,message = "Меньше нуля") int from,
-                                                                  @RequestParam(defaultValue = "20",required = false)
+                                                                  @RequestParam(defaultValue = "0", required = false)
+                                                                  @Min(value = 0, message = "Меньше нуля") int from,
+                                                                  @RequestParam(defaultValue = "20", required = false)
                                                                   @Positive int size) {
         log.info("Получение списка всех бронирований пользователя id={}", userId);
         return bookingService.getAllUsersBookingByState(userId, state, from, size);
@@ -56,7 +58,7 @@ public class BookingController {
     public Collection<BookingResponse> findAllBookingsForItemsOfUser(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                                      @RequestParam(defaultValue = "ALL") String state,
                                                                      @RequestParam(defaultValue = "0",required = false)
-                                                                         @Min(value = 0,message = "Меньше нуля")@Positive int from,
+                                                                         @Min(value = 0, message = "Меньше нуля") int from,
                                                                      @RequestParam(defaultValue = "10",required = false)
                                                                      @Positive int size) {
         log.info("Получение списка бронирований для всех вещей пользователя id={}",userId);
