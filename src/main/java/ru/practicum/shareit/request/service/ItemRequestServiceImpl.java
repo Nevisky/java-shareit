@@ -3,6 +3,7 @@ package ru.practicum.shareit.request.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,11 +77,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemRequestWithItems> getAllRequestsByPageable(Long userId, int from, int size) {
+    public List<ItemRequestWithItems> getAllRequestsByPageable(Long userId, Integer from, Integer size) {
         validateUser(userId);
-        Sort sort = Sort.by(Sort.Direction.DESC,"created");
-        PageRequest page = PageRequest.of(from / size, size, sort);
+        Pageable page = PageRequest.of(from / size, size, Sort.by("created").descending());
         List<ItemRequest> itemsList = itemRequestRepository.findAllByRequestorIdNot(userId, page);
+        if (itemsList.isEmpty()) {
+            return Collections.emptyList();
+        }
         return createItemsForRequest(itemsList);
     }
 

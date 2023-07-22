@@ -26,11 +26,11 @@ public class ItemRequest {
     @JoinColumn(name = "description", nullable = false)
     String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "requestor_id", nullable = false)
     User requestor;
 
-    @Column(name = "created_date")
+    @JoinColumn(name = "created")
     LocalDateTime created;
 
 }
