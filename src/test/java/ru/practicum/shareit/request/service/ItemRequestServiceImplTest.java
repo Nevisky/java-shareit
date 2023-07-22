@@ -97,6 +97,7 @@ class ItemRequestServiceImplTest {
         assertEquals(error, exception.getMessage());
         verify(itemRequestRepository, times(0)).save(any());
     }
+
     @Test
     void getAllRequestsWithRequester_thenReturnListItemsRequest() {
         long userId = requestor.getId();

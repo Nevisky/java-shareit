@@ -24,6 +24,7 @@ public interface ItemService {
     Collection<ItemDto> getItemsDtoByRequest(String text, int from, int size);
 
     User validateUser(Long userId);
+
     Item validateItem(Long itemId);
 
 }

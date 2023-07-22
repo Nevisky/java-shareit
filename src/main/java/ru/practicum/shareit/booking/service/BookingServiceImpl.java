@@ -81,7 +81,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponse updateBookingStatus(Long userId, Long bookingId, boolean approved) {
         Booking booking = validateBooking(bookingId);
         Long ownerId = booking.getItem().getOwner().getId();
-        if(!ownerId.equals(userId)) {
+        if (!ownerId.equals(userId)) {
             throw new ObjectNotFoundException("Вы не являетесь владельцем предмета.");
         }
 

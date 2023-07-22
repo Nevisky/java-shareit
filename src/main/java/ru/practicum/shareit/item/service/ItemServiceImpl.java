@@ -129,11 +129,13 @@ public class ItemServiceImpl implements ItemService {
         }
         return ItemMapper.listToItemDto(itemRepository.search(text,pageRequest));
     }
+
     @Override
     public User validateUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(String.format(
                 "Пользователь с id = %d не найден", userId)));
     }
+
     @Override
     public Item validateItem(Long itemId) {
         return itemRepository.findById(itemId).orElseThrow(() -> new ObjectNotFoundException(String.format(

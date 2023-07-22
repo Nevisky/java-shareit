@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
-    String BASE_URL = "/users";
+    String url = "/users";
     UserDto user;
     UserDto user2;
     @Autowired
@@ -57,7 +57,7 @@ class UserControllerTest {
         when(userService.saveUser(user))
                 .thenReturn(user);
 
-        String result = mockMvc.perform(post(BASE_URL)
+        String result = mockMvc.perform(post(url)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(user)))
                 .andDo(print())
@@ -76,7 +76,7 @@ class UserControllerTest {
                 .thenReturn(user);
         user.setName(" ");
 
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(post(url)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(user)))
                 .andDo(print())
@@ -96,7 +96,7 @@ class UserControllerTest {
                 .thenReturn(user);
         user.setEmail("");
 
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(post(url)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(user)))
                 .andDo(print())
@@ -115,7 +115,7 @@ class UserControllerTest {
         Long userId = 0L;
         user.setName("TestJava");
 
-        mockMvc.perform(put(BASE_URL + "/{userId}", userId)
+        mockMvc.perform(put(url + "/{userId}", userId)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(user)))
                 .andDo(print())
@@ -129,7 +129,7 @@ class UserControllerTest {
     void updateUser_whenUserIsValid_thenReturnOK() {
         when(userService.updateUser(user2.getId(), user2)).thenReturn(user);
 
-        mockMvc.perform(patch(BASE_URL + "/{userId}", user2.getId())
+        mockMvc.perform(patch(url + "/{userId}", user2.getId())
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(user2)))
                 .andDo(print())
@@ -143,7 +143,7 @@ class UserControllerTest {
         user.setEmail("Update@yandex.ru");
         when(userService.updateUser(user2.getId(), user2)).thenReturn(user);
 
-        mockMvc.perform(patch(BASE_URL + "/{userId}", user2.getId())
+        mockMvc.perform(patch(url + "/{userId}", user2.getId())
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(user2)))
                 .andDo(print())
@@ -156,7 +156,7 @@ class UserControllerTest {
     void getUserById_whenUserIdIsValid_thenReturnOK() {
         long userId = 1L;
 
-        mockMvc.perform(get(BASE_URL + "/{id}", userId))
+        mockMvc.perform(get(url + "/{id}", userId))
                 .andDo(print())
                 .andExpect(status().isOk());
         verify(userService).findUserById(userId);
@@ -167,7 +167,7 @@ class UserControllerTest {
     void getUserById_whenUserIdIsNotExist_thenReturnBadRequest() {
         when(userService.findUserById(999L))
                 .thenThrow(new ObjectNotFoundException(String.format("User not found: id=%d", 999L)));
-        mockMvc.perform(get(BASE_URL + "/{id}", 999L))
+        mockMvc.perform(get(url + "/{id}", 999L))
                 .andDo(print())
                 .andExpect(status().isNotFound());
         verify(userService).findUserById(999L);
@@ -175,7 +175,7 @@ class UserControllerTest {
 
     @Test
     void deleteUser_thenReturnOK() throws Exception {
-        mockMvc.perform(delete(BASE_URL + "/1"))
+        mockMvc.perform(delete(url + "/1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -184,7 +184,7 @@ class UserControllerTest {
     @Test
     void getAllUsers_whenUserListFiledUsers_thenReturnOK() {
         when(userService.findAllUsers()).thenReturn(List.of(user));
-        mockMvc.perform(get(BASE_URL))
+        mockMvc.perform(get(url))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(status().isOk(),
@@ -199,7 +199,7 @@ class UserControllerTest {
     @Test
     void getAllUsers_whenUserListIsEmpty_thenReturnEmptyListAndStatusOK() {
         when(userService.findAllUsers()).thenReturn(Collections.EMPTY_LIST);
-        mockMvc.perform(get(BASE_URL))
+        mockMvc.perform(get(url))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpectAll(status().isOk(),

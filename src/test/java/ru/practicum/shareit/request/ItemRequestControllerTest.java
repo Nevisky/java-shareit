@@ -55,7 +55,7 @@ class ItemRequestControllerTest {
     User user;
     User owner;
     Item item;
-    String BASE_URL = "/requests";
+    String url = "/requests";
     ItemRequest itemRequest;
 
     @Autowired
@@ -118,7 +118,7 @@ class ItemRequestControllerTest {
         ItemRequestDto itemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
 
         when(itemRequestService.createRequest(itemRequestDto, 1L)).thenReturn(itemRequestDto);
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(post(url)
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(itemRequestDto)))
@@ -133,7 +133,7 @@ class ItemRequestControllerTest {
         ItemRequestDto itemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
         when(itemRequestService.createRequest(itemRequestDto, 999L))
                 .thenThrow(new ObjectNotFoundException(String.format("Пользователь не найден: id=%d", 999L)));
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(post(url)
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 999)
                         .content(objectMapper.writeValueAsString(itemRequestDto)))
@@ -147,7 +147,7 @@ class ItemRequestControllerTest {
     void createRequest_whenRequestHasEmptyDescription_thenReturnBadRequest() {
         ItemRequestDto itemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest);
         itemRequestDto.setDescription("");
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(post(url)
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(itemRequestDto)))
@@ -165,7 +165,7 @@ class ItemRequestControllerTest {
         Collection<ItemDto> itemDtoCollection = List.of(ItemMapper.toItemDto(item));
         ItemRequestWithItems itemRequestWithItems = ItemRequestMapper.toItemRequestWithItems(itemRequest, itemDtoCollection);
         when(itemRequestService.getItemsRequestByRequestorId(user.getId())).thenReturn(List.of(itemRequestWithItems));
-        mockMvc.perform(get(BASE_URL)
+        mockMvc.perform(get(url)
                         .header("X-Sharer-User-Id", 1))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -177,7 +177,7 @@ class ItemRequestControllerTest {
     @Test
     void getAllRequestsWithUsers_thenReturnEmptyList() {
         when(itemRequestService.getItemsRequestByRequestorId(user.getId())).thenReturn(Collections.emptyList());
-        mockMvc.perform(get(BASE_URL)
+        mockMvc.perform(get(url)
                         .header("X-Sharer-User-Id", 2))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -189,7 +189,7 @@ class ItemRequestControllerTest {
     void getAllRequestsWithUsersWithNotFoundUser_thenReturnNotFound() {
         when(itemRequestService.getItemsRequestByRequestorId(999L))
                 .thenThrow(new ObjectNotFoundException(String.format("Пользователь не найден: id=%d", 999L)));
-        mockMvc.perform(get(BASE_URL)
+        mockMvc.perform(get(url)
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 999))
                 .andDo(print())
@@ -204,7 +204,7 @@ class ItemRequestControllerTest {
         ItemRequestWithItems itemRequestWithItems = ItemRequestMapper.toItemRequestWithItems(itemRequest, itemDtoCollection);
 
         when(itemRequestService.getRequestById(user.getId(), itemRequest.getId())).thenReturn(itemRequestWithItems);
-        mockMvc.perform(get(BASE_URL + "/1")
+        mockMvc.perform(get(url + "/1")
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(itemRequestWithItems)))
@@ -218,7 +218,7 @@ class ItemRequestControllerTest {
     void getRequestWithUsersById_whenNotExistingUserId_thenReturnNotFound() {
         when(itemRequestService.getRequestById(999L, 1L))
                 .thenThrow(new ObjectNotFoundException(String.format("Пользователь не найден: id=%d", 999L)));
-        mockMvc.perform(get(BASE_URL + "/1")
+        mockMvc.perform(get(url + "/1")
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 999))
                 .andDo(print())
@@ -231,7 +231,7 @@ class ItemRequestControllerTest {
     void getRequestWithUsersById_whenNotExistingRequestId_thenReturnNotFound() {
         when(itemRequestService.getRequestById(1L, 999L))
                 .thenThrow(new ObjectNotFoundException(String.format("Запрос не найден: id=%d", 999L)));
-        mockMvc.perform(get(BASE_URL + "/999")
+        mockMvc.perform(get(url + "/999")
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 1))
                 .andDo(print())
@@ -246,7 +246,7 @@ class ItemRequestControllerTest {
         ItemRequestWithItems itemRequestWithItems = ItemRequestMapper.toItemRequestWithItems(itemRequest, itemDtoCollection);
         when(itemRequestService.getAllRequestsByPageable(1L, 0, 1))
                 .thenReturn(List.of(itemRequestWithItems));
-        mockMvc.perform(get(BASE_URL + "/all")
+        mockMvc.perform(get(url + "/all")
                         .header("X-Sharer-User-Id", 1)
                         .param("from", "0")
                         .param("size", "1"))
@@ -259,7 +259,7 @@ class ItemRequestControllerTest {
     @SneakyThrows
     @Test
     void getRequests_whenFromIsNegative_ReturnInternalServerError() {
-        mockMvc.perform(get(BASE_URL + "/all")
+        mockMvc.perform(get(url + "/all")
                         .header("X-Sharer-User-Id", 1)
                         .param("from", "-1"))
                 .andDo(print())
@@ -269,7 +269,7 @@ class ItemRequestControllerTest {
     @SneakyThrows
     @Test
     void getRequests_whenSizeIsZero_ReturnInternalServerError() {
-        mockMvc.perform(get(BASE_URL + "/all")
+        mockMvc.perform(get(url + "/all")
                         .header("X-Sharer-User-Id", 1)
                         .param("size", "0"))
                 .andDo(print())
@@ -279,7 +279,7 @@ class ItemRequestControllerTest {
     @SneakyThrows
     @Test
     void getRequests_whenSizeIsNegative_ReturnInternalServerError() {
-        mockMvc.perform(get(BASE_URL + "/all")
+        mockMvc.perform(get(url + "/all")
                         .header("X-Sharer-User-Id", 1)
                         .param("size", "-1"))
                 .andDo(print())

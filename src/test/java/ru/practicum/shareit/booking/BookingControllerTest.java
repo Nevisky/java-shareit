@@ -68,7 +68,7 @@ class BookingControllerTest {
 
 	ItemRequest itemRequest;
 
-	String BASE_URL = "/bookings";
+	String url = "/bookings";
 
 	@BeforeEach
 	void setUp() {
@@ -112,7 +112,7 @@ class BookingControllerTest {
 
 		when(bookingService.saveBooking(bookingResponse.getId(), bookingDto)).thenReturn(bookingResponse);
 
-		String result = mockMvc.perform(post(BASE_URL)
+		String result = mockMvc.perform(post(url)
 				.contentType("application/json")
 				.header("X-Sharer-User-Id", 1)
 				.content(objectMapper.writeValueAsString(bookingDto)))
@@ -133,7 +133,7 @@ class BookingControllerTest {
 
 		when(bookingService.saveBooking(999L, bookingDto)).thenThrow(new ObjectNotFoundException("Пользоавтеля не существует"));
 
-		mockMvc.perform(post(BASE_URL)
+		mockMvc.perform(post(url)
 				.contentType("application/json")
 				.header("X-Sharer-User-Id", 999)
 				.content(objectMapper.writeValueAsString(bookingDto)))
@@ -152,12 +152,12 @@ class BookingControllerTest {
 
 		when(bookingService.saveBooking(1L, bookingDto)).thenThrow(new ObjectNotFoundException("Предмета не существует"));
 
-		mockMvc.perform(post(BASE_URL)
+		mockMvc.perform(post(url)
 				.contentType("application/json")
 				.header("X-Sharer-User-Id", 1)
 				.content(objectMapper.writeValueAsString(bookingDto)))
-				.andDo(print()).
-				andExpect(status()
+				.andDo(print())
+				.andExpect(status()
 						.isNotFound());
 
 	}
@@ -172,7 +172,7 @@ class BookingControllerTest {
 
 		when(bookingService.saveBooking(1L, bookingDto))
 				.thenThrow(new IllegalArgumentException("Время завершения бронирования не может быть раньше начала"));
-		mockMvc.perform(post(BASE_URL)
+		mockMvc.perform(post(url)
 				.contentType("application/json")
 				.header("X-Sharer-User-Id", 1)
 				.content(objectMapper.writeValueAsString(bookingDto)))
@@ -190,7 +190,7 @@ class BookingControllerTest {
 
 		when(bookingService.saveBooking(1L, bookingDto))
 				.thenThrow(new ValidateStateException("Время завершения бронирования не может быть NULL"));
-		mockMvc.perform(post(BASE_URL)
+		mockMvc.perform(post(url)
 				.contentType("application/json")
 				.header("X-Sharer-User-Id", 1)
 				.content(objectMapper.writeValueAsString(bookingDto)))
@@ -212,7 +212,7 @@ class BookingControllerTest {
 
 		when(bookingService.saveBooking(1L, bookingDto))
 				.thenThrow(new ValidateStateException("Время начала бронирования не может быть NULL"));
-		mockMvc.perform(post(BASE_URL)
+		mockMvc.perform(post(url)
 				.contentType("application/json")
 				.header("X-Sharer-User-Id", 1)
 				.content(objectMapper.writeValueAsString(bookingDto)))
@@ -231,7 +231,7 @@ class BookingControllerTest {
 		BookingResponse bookingResponse = BookingMapper.toBookingResponse(booking);
 		when(bookingService.updateBookingStatus(1L, 1L, true)).thenReturn(bookingResponse);
 
-		mockMvc.perform(patch(BASE_URL + "/1")
+		mockMvc.perform(patch(url + "/1")
 				.header("X-Sharer-User-Id", 1)
 				.param("approved", "true"))
 				.andDo(print()).andExpect(status().isOk())
@@ -246,7 +246,7 @@ class BookingControllerTest {
 
 		when(bookingService.updateBookingStatus(1L, 1L, false)).thenReturn(bookingResponse);
 
-		mockMvc.perform(patch(BASE_URL + "/1")
+		mockMvc.perform(patch(url + "/1")
 				.header("X-Sharer-User-Id", 1)
 				.param("approved", "false"))
 				.andDo(print())
@@ -259,7 +259,7 @@ class BookingControllerTest {
 	void shouldApproveWithNotFoundUser_ReturnStatusNotFound() {
 		when(bookingService.updateBookingStatus(999L, 1L, true))
 				.thenThrow(new ObjectNotFoundException(String.format("Пользователь не найден: id=%d", 999L)));
-		mockMvc.perform(patch(BASE_URL + "/1")
+		mockMvc.perform(patch(url + "/1")
 				.header("X-Sharer-User-Id", 999)
 				.param("approved", "true"))
 				.andDo(print())
@@ -272,7 +272,7 @@ class BookingControllerTest {
 	void updateBookingStatus_whenApproveWithNotFoundBooking_ReturnNotFound() {
 		when(bookingService.updateBookingStatus(1L, 999L, true))
 				.thenThrow(new ObjectNotFoundException(String.format("Бронирование не найдено: id=%d", 999L)));
-		mockMvc.perform(patch(BASE_URL + "/999")
+		mockMvc.perform(patch(url + "/999")
 				.header("X-Sharer-User-Id", 1)
 				.param("approved", "true"))
 				.andDo(print())
@@ -285,7 +285,7 @@ class BookingControllerTest {
 	void updateBookingStatus_whenApproveWithStatusNotWaiting_ReturnStatusBadRequest() {
 		when(bookingService.updateBookingStatus(1L, 1L, false))
 				.thenThrow(new ValidationException(String.format("Нельзя забронировать: id=%d", 1L)));
-		mockMvc.perform(patch(BASE_URL + "/1")
+		mockMvc.perform(patch(url + "/1")
 				.header("X-Sharer-User-Id", 1)
 				.param("approved", "false"))
 				.andDo(print())
@@ -299,7 +299,7 @@ class BookingControllerTest {
 		BookingResponse bookingResponse = BookingMapper.toBookingResponse(booking);
 
 		when(bookingService.getBookingById(1L, 1L)).thenReturn(bookingResponse);
-		mockMvc.perform(get(BASE_URL + "/1")
+		mockMvc.perform(get(url + "/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("X-Sharer-User-Id", 1)
 				.content(objectMapper.writeValueAsString(bookingResponse)))
@@ -313,7 +313,7 @@ class BookingControllerTest {
 	void getBookingByIdWhenNotExistingUserId_ReturnBadRequest() {
 		when(bookingService.getBookingById(999L, 1L))
 				.thenThrow(new ObjectNotFoundException(String.format("Пользователь не найден: id=%d", 999L)));
-		mockMvc.perform(get(BASE_URL + "/1")
+		mockMvc.perform(get(url + "/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("X-Sharer-User-Id", 999))
 				.andDo(print())
@@ -326,7 +326,7 @@ class BookingControllerTest {
 	void getBookingById_whenNotExistingBookingId_ReturnBadRequest() {
 		when(bookingService.getBookingById(1L, 999L))
 				.thenThrow(new ObjectNotFoundException(String.format("Бронирование не найдено: id=%d", 999L)));
-		mockMvc.perform(get(BASE_URL + "/999")
+		mockMvc.perform(get(url + "/999")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("X-Sharer-User-Id", 1))
 				.andDo(print())
@@ -339,7 +339,7 @@ class BookingControllerTest {
 	void getBookingsPresentUser_ReturnEmptyList() {
 		when(bookingService.getAllBookingsForItemsOfUser(1L, "APPROVE", 0, 1))
 				.thenReturn(Collections.emptyList());
-		mockMvc.perform(get(BASE_URL)
+		mockMvc.perform(get(url)
 				.header("X-Sharer-User-Id", 1)
 				.param("state", "rejected"))
 				.andDo(print())
@@ -354,7 +354,7 @@ class BookingControllerTest {
 		bookingResponse.setStatus(BookingStatus.WAITING);
 		when(bookingService.getAllUsersBookingByState(1L, "WAITING", 0, 10))
 				.thenReturn(List.of(bookingResponse));
-		mockMvc.perform(get(BASE_URL)
+		mockMvc.perform(get(url)
 				.header("X-Sharer-User-Id", 1)
 				.param("state", "WAITING")
 				.param("from", "0")
@@ -368,7 +368,7 @@ class BookingControllerTest {
 	@SneakyThrows
 	@Test
 	void getBookingsPresentUser_whenFromIsNegative_ReturnInternalServerError() {
-		mockMvc.perform(get(BASE_URL)
+		mockMvc.perform(get(url)
 				.header("X-Sharer-User-Id", 1)
 				.param("state", "WAITING")
 				.param("from", "-1")
@@ -381,7 +381,7 @@ class BookingControllerTest {
 	void getBookingsPresentUser_whenStateFail_ReturnInternalServerError() {
 		when(bookingService.getAllUsersBookingByState(1L, "WRONG", 1, 10))
 				.thenThrow(new IllegalArgumentException(String.format("Unknown state: %s", "WRONG")));
-		mockMvc.perform(get(BASE_URL)
+		mockMvc.perform(get(url)
 				.header("X-Sharer-User-Id", 1)
 				.param("state", "WRONG")
 				.param("from", "1")
@@ -396,7 +396,7 @@ class BookingControllerTest {
 	void getBookingsAllItemPresentUser_thenReturnEmptyList() {
 		when(bookingService.getAllBookingsForItemsOfUser(1L, "APPROVED", 1, 10))
 				.thenReturn(Collections.emptyList());
-		mockMvc.perform(get(BASE_URL + "/owner")
+		mockMvc.perform(get(url + "/owner")
 				.header("X-Sharer-User-Id", 1)
 				.param("state", "APPROVED")
 				.param("from", "1")
@@ -412,7 +412,7 @@ class BookingControllerTest {
 		BookingResponse bookingResponse = BookingMapper.toBookingResponse(booking);
 		when(bookingService.getAllBookingsForItemsOfUser(1L, "APPROVED", 1, 10))
 				.thenReturn(List.of(bookingResponse));
-		mockMvc.perform(get(BASE_URL + "/owner")
+		mockMvc.perform(get(url + "/owner")
 				.header("X-Sharer-User-Id", 1)
 				.param("state", "APPROVED")
 				.param("from", "1")
@@ -426,7 +426,7 @@ class BookingControllerTest {
 	@SneakyThrows
 	@Test
 	void getBookingsAllItemPresentUser_whenFromIsNegative_ReturnInternalServerError() {
-		mockMvc.perform(get(BASE_URL + "/owner")
+		mockMvc.perform(get(url + "/owner")
 				.header("X-Sharer-User-Id", 1)
 				.param("state", "APPROVED")
 				.param("from", "-1")
@@ -440,7 +440,7 @@ class BookingControllerTest {
 	void getBookingsAllItemPresentUser_whenStateWrong_ReturnInternalServerError() {
 		when(bookingService.getAllBookingsForItemsOfUser(1L, "FAIL", 0, 10))
 				.thenThrow(new ValidateStateException(String.format("Unknown state: %s", "UNSUPPORTED_STATUS")));
-		mockMvc.perform(get(BASE_URL + "/owner")
+		mockMvc.perform(get(url + "/owner")
 				.header("X-Sharer-User-Id", 1)
 				.param("state", "FAIL")
 				.param("from", "0")

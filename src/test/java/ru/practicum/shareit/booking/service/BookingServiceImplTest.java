@@ -193,8 +193,8 @@ class BookingServiceImplTest {
 
         // FUTURE
         booking.setStart(LocalDateTime.now().plusSeconds(60));
-        when(bookingRepository.findByItemOwnerIdAndStartIsAfterOrderByStartDesc(anyLong(), any(), any())).
-                thenReturn(List.of(booking));
+        when(bookingRepository.findByItemOwnerIdAndStartIsAfterOrderByStartDesc(anyLong(), any(), any()))
+                .thenReturn(List.of(booking));
 
         bookings = bookingService.getAllBookingsForItemsOfUser(userId, "FUTURE", 0, 1);
 

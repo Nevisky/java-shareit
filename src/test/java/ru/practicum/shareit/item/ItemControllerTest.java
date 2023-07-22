@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest
 class ItemControllerTest {
 
-    String BASE_URL = "/items";
+    String url = "/items";
     User user;
     Item item;
     @Autowired
@@ -88,7 +88,7 @@ class ItemControllerTest {
         ItemDto itemDto = ItemMapper.toItemDto(item);
         when(itemService.saveItem(item.getId(), itemDto)).thenReturn(itemDto);
 
-        String result = mockMvc.perform(post(BASE_URL)
+        String result = mockMvc.perform(post(url)
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(itemDto)))
@@ -107,7 +107,7 @@ class ItemControllerTest {
         ItemDto itemDto = ItemMapper.toItemDto(item);
         when(itemService.saveItem(item.getId(), itemDto)).thenThrow(new IllegalArgumentException());
 
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(post(url)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(itemDto)))
                 .andDo(print())
@@ -123,7 +123,7 @@ class ItemControllerTest {
         itemDto.setOwner(999L);
         when(itemService.saveItem(999L, itemDto)).thenThrow(new ObjectNotFoundException("Нет такого пользователя"));
 
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(post(url)
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 999)
                         .content(objectMapper.writeValueAsString(itemDto)))
@@ -138,7 +138,7 @@ class ItemControllerTest {
         ItemDto itemDto = ItemMapper.toItemDto(item);
         itemDto.setName(" ");
 
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(post(url)
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(itemDto)))
@@ -157,7 +157,7 @@ class ItemControllerTest {
         ItemDto itemDto = ItemMapper.toItemDto(item);
         itemDto.setAvailable(null);
 
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(post(url)
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(itemDto)))
@@ -176,7 +176,7 @@ class ItemControllerTest {
         ItemDto itemDto = ItemMapper.toItemDto(item);
         itemDto.setDescription(" ");
 
-        mockMvc.perform(post(BASE_URL)
+        mockMvc.perform(post(url)
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(itemDto)))
@@ -199,7 +199,7 @@ class ItemControllerTest {
 
         when(itemService.updateItem(1L, itemDto, 1L)).thenReturn(itemDtoResponse);
 
-        mockMvc.perform(patch(BASE_URL + "/1")
+        mockMvc.perform(patch(url + "/1")
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(itemDtoResponse)))
@@ -214,7 +214,7 @@ class ItemControllerTest {
         ItemDto itemDto = ItemMapper.toItemDto(item);
         when(itemService.updateItem(null, itemDto, 1L)).thenThrow(new IllegalArgumentException("Такого пользователя не существует"));
 
-        mockMvc.perform(patch(BASE_URL + "/1")
+        mockMvc.perform(patch(url + "/1")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(itemDto)))
                 .andDo(print())
@@ -228,7 +228,7 @@ class ItemControllerTest {
     void getAllItems_whenNoUsers_thenReturnEmptyList() {
 
         when(itemService.getItemDtoByUserId(1L, 1, 1)).thenReturn(Collections.emptyList());
-        mockMvc.perform(get(BASE_URL)
+        mockMvc.perform(get(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", 1)
                         .param("from", "0")
@@ -243,7 +243,7 @@ class ItemControllerTest {
     void getItemById_whenItemIsValid_thenReturnOK() {
         ItemDtoWithBookingAndComments newDto = ItemDtoWithBookingAndComments.builder().id(1L).build();
         when(itemService.getItemById(1L, 1L)).thenReturn(newDto);
-        mockMvc.perform(get(BASE_URL + "/1")
+        mockMvc.perform(get(url + "/1")
                         .contentType("application/json")
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(newDto)))
@@ -258,7 +258,7 @@ class ItemControllerTest {
         CommentDto commentDto = CommentDto.builder().id(1L).authorName("name").text("Comment").created(LocalDateTime.now()).build();
 
         when(itemService.createComment(commentDto, 1L, 1L)).thenReturn(commentDto);
-        mockMvc.perform(post(BASE_URL + "/1/comment")
+        mockMvc.perform(post(url + "/1/comment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(commentDto)))
@@ -271,7 +271,7 @@ class ItemControllerTest {
     @Test
     void createCommentItem_whenCommentEmptyText_ReturnBadRequest() {
         CommentDto commentDto = CommentDto.builder().text("").build();
-        mockMvc.perform(post(BASE_URL + "/1/comment")
+        mockMvc.perform(post(url + "/1/comment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(commentDto)))
@@ -288,13 +288,13 @@ class ItemControllerTest {
     void getItemsByTextRequest_thenReturnItem() {
         ItemDto itemDto = ItemMapper.toItemDto(item);
         when(itemService.getItemsDtoByRequest(anyString(), anyInt(), anyInt())).thenReturn(Collections.emptyList());
-        mockMvc.perform(get(BASE_URL + "/search")
+        mockMvc.perform(get(url + "/search")
                         .param("text", ""))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
 
         when(itemService.getItemsDtoByRequest(anyString(), anyInt(), anyInt())).thenReturn(List.of(itemDto));
-        mockMvc.perform(get(BASE_URL + "/search")
+        mockMvc.perform(get(url + "/search")
                         .param("text", "equ")
                         .param("from", "0")
                         .param("size", "1"))
