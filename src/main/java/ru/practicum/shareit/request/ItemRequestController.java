@@ -38,9 +38,9 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestWithItems> getAllRequests(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                     @RequestParam(defaultValue = "0",required = false)
+                                                     @RequestParam(defaultValue = "0")
                                                      @Min(0) Integer from,
-                                                     @RequestParam(defaultValue = "10",required = false)
+                                                     @RequestParam(defaultValue = "10")
                                                      @Positive Integer size) {
         log.info("Создан запрос на получение всех предметов");
         return itemRequestService.getAllRequestsByPageable(userId, from, size);

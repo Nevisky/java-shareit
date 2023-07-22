@@ -46,9 +46,9 @@ public class BookingController {
     @GetMapping
     public Collection<BookingResponse> findAllUsersBookingByState(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                                   @RequestParam(defaultValue = "ALL") String state,
-                                                                  @RequestParam(defaultValue = "0", required = false)
+                                                                  @RequestParam(defaultValue = "0")
                                                                   @Min(value = 0, message = "Меньше нуля") int from,
-                                                                  @RequestParam(defaultValue = "20", required = false)
+                                                                  @RequestParam(defaultValue = "20")
                                                                   @Positive int size) {
         log.info("Получение списка всех бронирований пользователя id={}", userId);
         return bookingService.getAllUsersBookingByState(userId, state, from, size);
@@ -57,9 +57,9 @@ public class BookingController {
     @GetMapping("/owner")
     public Collection<BookingResponse> findAllBookingsForItemsOfUser(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                                      @RequestParam(defaultValue = "ALL") String state,
-                                                                     @RequestParam(defaultValue = "0",required = false)
+                                                                     @RequestParam(defaultValue = "0")
                                                                          @Min(value = 0, message = "Меньше нуля") int from,
-                                                                     @RequestParam(defaultValue = "10",required = false)
+                                                                     @RequestParam(defaultValue = "10")
                                                                      @Positive int size) {
         log.info("Получение списка бронирований для всех вещей пользователя id={}",userId);
         return bookingService.getAllBookingsForItemsOfUser(userId, state, from, size);
