@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -33,7 +34,8 @@ public class Item {
     @JoinColumn(name = "owner_id")
     User owner;
 
-    @Column(name = "request_id")
-    Long request;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requests_id")
+    ItemRequest request;
 
 }

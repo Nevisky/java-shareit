@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -21,16 +20,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto saveUser(UserDto userDto) {
-        if (userDto.getEmail() == null) {
-            throw new ValidationException("Поле email не должно быть пустым");
-        }
-        if (userDto.getName() != null) {
-            if (userDto.getName().isBlank()) {
-                throw new ValidationException("Поле name не должно быть пустым");
-            }
-        }
-
-        return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
+        User user = userRepository.save(UserMapper.toUser(userDto));
+        return UserMapper.toUserDto(user);
     }
 
     @Override
@@ -38,15 +29,9 @@ public class UserServiceImpl implements UserService {
         User newUser = userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(
                 String.format("Пользователь с таким id = %d не найден", userId)));
         if (user.getName() != null) {
-            if (user.getName().isBlank()) {
-                throw new ValidationException("Поле name не должно быть пустым");
-            }
             newUser.setName(user.getName());
         }
         if (user.getEmail() != null) {
-            if (user.getEmail().isBlank() || user.getEmail().isEmpty()) {
-                throw new ValidationException("Поле email не должно быть пустым");
-            }
             newUser.setEmail(user.getEmail());
         }
         return UserMapper.toUserDto(userRepository.save(newUser));

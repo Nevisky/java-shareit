@@ -9,6 +9,8 @@ import ru.practicum.shareit.item.dto.ItemDtoWithBookingAndComments;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,9 +45,12 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDtoWithBookingAndComments> getItemsByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDtoWithBookingAndComments> getItemsByUserId(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                                @RequestParam(name = "from", defaultValue = "0")
+                                                                @PositiveOrZero int from,
+                                                                @RequestParam(name = "size", defaultValue = "10") @Positive int size) {
         log.info("Найдены все Items пользователя userId={}", userId);
-        return itemService.getItemDtoByUserId(userId);
+        return itemService.getItemDtoByUserId(userId, from, size);
     }
 
     @PostMapping("{itemId}/comment")
@@ -57,9 +62,12 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> getItemsByTextRequest(@RequestParam String text) {
+    public Collection<ItemDto> getItemsByTextRequest(@RequestParam String text,
+                                                     @RequestParam(name = "from", defaultValue = "0")
+                                                     @PositiveOrZero int from,
+                                                     @RequestParam(name = "size", defaultValue = "10") @Positive int size) {
         log.info("Найден предмет по тексту запроса");
-        return itemService.getItemsDtoByRequest(text);
+        return itemService.getItemsDtoByRequest(text, from, size);
     }
 
 }
