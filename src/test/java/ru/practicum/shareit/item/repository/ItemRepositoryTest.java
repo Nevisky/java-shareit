@@ -88,7 +88,7 @@ class ItemRepositoryTest {
                 .text("Equipment")
                 .item(item)
                 .author(author)
-                .createdDate(LocalDateTime.now())
+                .created(LocalDateTime.now())
                 .build();
         commentRepository.save(comment);
     }

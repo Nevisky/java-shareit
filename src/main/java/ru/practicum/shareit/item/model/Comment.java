@@ -34,7 +34,7 @@ public class Comment {
     @JoinColumn(name = "author_id", nullable = false)
     User author;
 
-    @Column(name = "create_date")
-    LocalDateTime createdDate;
+    @Column(name = "created")
+    LocalDateTime created;
 
 }

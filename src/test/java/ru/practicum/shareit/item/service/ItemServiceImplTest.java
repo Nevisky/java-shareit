@@ -91,7 +91,7 @@ class ItemServiceImplTest {
                 .text("TestText")
                 .author(booker)
                 .item(item)
-                .createdDate(LocalDateTime.now())
+                .created(LocalDateTime.now())
                 .build();
     }
 
