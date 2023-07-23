@@ -23,6 +23,8 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    private UserClient userClient;
 
     @BeforeEach
     void addUser() {
