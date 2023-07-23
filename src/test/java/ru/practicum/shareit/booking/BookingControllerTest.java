@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking_example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -9,12 +9,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingResponse;
-import ru.practicum.shareit.booking.mapper.BookingMapper;
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.booking.util.BookingStatus;
+import ru.practicum.shareit.booking_example.dto.BookingDto;
+import ru.practicum.shareit.booking_example.dto.BookingResponse;
+import ru.practicum.shareit.booking_example.mapper.BookingMapper;
+import ru.practicum.shareit.booking_example.model.Booking;
+import ru.practicum.shareit.booking_example.service.BookingService;
+import ru.practicum.shareit.booking_example.util.BookingStatus;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.exception.ValidateStateException;
 import ru.practicum.shareit.exception.ValidationException;

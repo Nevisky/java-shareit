@@ -1,8 +1,8 @@
-package ru.practicum.shareit.booking.dto;
+package ru.practicum.shareit.booking_example.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.booking.util.BookingStatus;
+import ru.practicum.shareit.booking_example.util.BookingStatus;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 

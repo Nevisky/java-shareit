@@ -1,10 +1,10 @@
-package ru.practicum.shareit.booking.repository;
+package ru.practicum.shareit.booking_example.repository;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.booking.util.BookingStatus;
-import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking_example.util.BookingStatus;
+import ru.practicum.shareit.booking_example.model.Booking;
 
 import java.time.LocalDateTime;
 import java.util.List;

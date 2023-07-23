@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.service;
+package ru.practicum.shareit.booking_example.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,13 +6,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.util.BookingStatus;
-import ru.practicum.shareit.booking.util.State;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.mapper.BookingMapper;
-import ru.practicum.shareit.booking.dto.BookingResponse;
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking_example.util.BookingStatus;
+import ru.practicum.shareit.booking_example.util.State;
+import ru.practicum.shareit.booking_example.dto.BookingDto;
+import ru.practicum.shareit.booking_example.mapper.BookingMapper;
+import ru.practicum.shareit.booking_example.dto.BookingResponse;
+import ru.practicum.shareit.booking_example.model.Booking;
+import ru.practicum.shareit.booking_example.repository.BookingRepository;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.exception.ValidateStateException;
 import ru.practicum.shareit.exception.ValidationException;

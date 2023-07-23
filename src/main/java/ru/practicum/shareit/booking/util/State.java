@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.util;
+package ru.practicum.shareit.booking_example.util;
 
 public enum State {
     ALL,
