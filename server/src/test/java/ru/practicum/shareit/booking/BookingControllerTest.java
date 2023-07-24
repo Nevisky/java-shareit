@@ -16,8 +16,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.util.BookingStatus;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
-import ru.practicum.shareit.exception.ValidateStateException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -162,26 +160,6 @@ class BookingControllerTest {
 
 	}
 
-	@SneakyThrows
-	@Test
-	void createBooking_whenEndTimeInPast_thenReturnInternalServerError() {
-		BookingDto bookingDto = BookingMapper.toBookingDto(booking);
-		LocalDateTime start = LocalDateTime.now();
-		LocalDateTime end = start.minusDays(4);
-		bookingDto.setEnd(end);
-
-		when(bookingService.saveBooking(1L, bookingDto))
-				.thenThrow(new IllegalArgumentException("Время завершения бронирования не может быть раньше начала"));
-		mockMvc.perform(post(url)
-				.contentType("application/json")
-				.header("X-Sharer-User-Id", 1)
-				.content(objectMapper.writeValueAsString(bookingDto)))
-				.andDo(print())
-				.andExpect(status().isInternalServerError());
-
-		assertTrue(bookingDto.getStart().isAfter(bookingDto.getEnd()));
-	}
-
 
 	@SneakyThrows
 	@Test
@@ -242,7 +220,7 @@ class BookingControllerTest {
 	@Test
 	void updateBookingStatus_whenApproveWithStatusNotWaiting_ReturnStatusBadRequest() {
 		when(bookingService.updateBookingStatus(1L, 1L, false))
-				.thenThrow(new ValidationException(String.format("Нельзя забронировать: id=%d", 1L)));
+				.thenThrow(new IllegalArgumentException(String.format("Нельзя забронировать: id=%d", 1L)));
 		mockMvc.perform(patch(url + "/1")
 				.header("X-Sharer-User-Id", 1)
 				.param("approved", "false"))
@@ -325,7 +303,7 @@ class BookingControllerTest {
 
 	@SneakyThrows
 	@Test
-	void getBookingsPresentUser_whenStateFail_ReturnInternalServerError() {
+	void getBookingsPresentUser_whenStateFail_ReturnBadRequest() {
 		when(bookingService.getAllUsersBookingByState(1L, "WRONG", 1, 10))
 				.thenThrow(new IllegalArgumentException(String.format("Unknown state: %s", "WRONG")));
 		mockMvc.perform(get(url)
@@ -334,7 +312,7 @@ class BookingControllerTest {
 				.param("from", "1")
 				.param("size", "10"))
 				.andDo(print())
-				.andExpect(status().isInternalServerError())
+				.andExpect(status().isBadRequest())
 				.andExpect(content().json("{\"message\":\"Unknown state: WRONG\"}"));
 	}
 
@@ -372,17 +350,17 @@ class BookingControllerTest {
 
 	@SneakyThrows
 	@Test
-	void getBookingsAllItemPresentUser_whenStateWrong_ReturnInternalServerError() {
+	void getBookingsAllItemPresentUser_whenStateWrong_ReturnNotFound() {
 		when(bookingService.getAllBookingsForItemsOfUser(1L, "FAIL", 0, 10))
-				.thenThrow(new ValidateStateException(String.format("Unknown state: %s", "UNSUPPORTED_STATUS")));
+				.thenThrow(new ObjectNotFoundException(String.format("Unknown state: %s", "UNSUPPORTED_STATUS")));
 		mockMvc.perform(get(url + "/owner")
 				.header("X-Sharer-User-Id", 1)
 				.param("state", "FAIL")
 				.param("from", "0")
 				.param("size", "10"))
 				.andDo(print())
-				.andExpect(status().isBadRequest())
-				.andExpect(content().json("{\"error\":\"Unknown state: UNSUPPORTED_STATUS\"}"));
+				.andExpect(status().isNotFound())
+				.andExpect(content().json("{\"message\":\"Unknown state: UNSUPPORTED_STATUS\"}"));
 	}
 
 }

@@ -66,6 +66,7 @@ public class ItemController {
                                                      @RequestParam(name = "from", defaultValue = "0")
                                                      @PositiveOrZero int from,
                                                      @RequestParam(name = "size", defaultValue = "10") @Positive int size) {
+
         log.info("Найден предмет по тексту запроса");
         return itemClient.search(userId, text, from, size);
     }

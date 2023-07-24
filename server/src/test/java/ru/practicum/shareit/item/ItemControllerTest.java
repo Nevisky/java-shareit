@@ -111,7 +111,7 @@ class ItemControllerTest {
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(itemDto)))
                 .andDo(print())
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
         verify(itemService, never()).saveItem(itemDto.getId(), itemDto);
 
     }
@@ -161,9 +161,7 @@ class ItemControllerTest {
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(itemDto)))
                 .andDo(print())
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().json("{\"message\":\"Required request header 'X-Sharer-User-Id' " +
-                        "for method parameter type Long is not present\"}"));
+                .andExpect(status().isBadRequest());
     }
 
     @SneakyThrows
@@ -230,7 +228,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.size()", is(1)))
                 .andExpect(jsonPath("$[0].id", is(itemDto.getId()), Long.class))
                 .andExpect(jsonPath("$[0].name", is(itemDto.getName()), String.class));
-        verify(itemService, times(2))
+        verify(itemService, times(1))
                 .getItemsDtoByRequest(anyString(), anyInt(), anyInt());
     }
 

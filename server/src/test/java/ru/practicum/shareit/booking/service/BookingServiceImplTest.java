@@ -20,7 +20,6 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingResponse;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 
@@ -163,7 +162,7 @@ class BookingServiceImplTest {
 
         // WRONG
         String error = "Unknown state: UNSUPPORTED_STATUS";
-        ValidationException exception = assertThrows(ValidationException.class,
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> bookingService.getAllUsersBookingByState(userId, "Unknown state: UNSUPPORTED_STATUS", from, size));
         assertEquals(error, exception.getMessage());
     }
@@ -231,7 +230,7 @@ class BookingServiceImplTest {
 
         // Wrong State
         String error = "Unknown state: UNSUPPORTED_STATUS";
-        ValidationException exception = assertThrows(ValidationException.class,
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> bookingService.getAllUsersBookingByState(userId, "Unknown state: UNSUPPORTED_STATUS", 0, 1));
         assertEquals(error, exception.getMessage());
     }
@@ -342,7 +341,7 @@ class BookingServiceImplTest {
         String error = String.format("Бронь с id = %d уже существует.",bookingId);
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
 
-        ValidationException exception = assertThrows(ValidationException.class,
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> bookingService.updateBookingStatus(userId, bookingId, true));
         assertEquals(error, exception.getMessage());
     }

@@ -29,12 +29,6 @@ public class ErrorHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
-    @ExceptionHandler(EmailAlreadyExistException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleEmailAlreadyExistException(Exception e) {
-        log.error(e.getMessage(), e);
-        return new ErrorResponse(HttpStatus.CONFLICT, e.getMessage());
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

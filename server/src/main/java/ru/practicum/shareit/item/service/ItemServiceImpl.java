@@ -112,10 +112,10 @@ public class ItemServiceImpl implements ItemService {
         Booking booking = bookingRepository.findTopByStatusNotLikeAndItemIdAndBookerIdOrderByEndAsc(BookingStatus.REJECTED, itemId, userId);
         Comment comment = CommentMapper.toComment(commentDto, user, item);
         if (booking == null) {
-            throw new ValidationException(String.format("Предмет с id = %d не был забронирован пользователем с id = %d", itemId, userId));
+            throw new IllegalArgumentException(String.format("Предмет с id = %d не был забронирован пользователем с id = %d", itemId, userId));
         }
         if (booking.getStart().isAfter(LocalDateTime.now())) {
-            throw new ValidationException("Неправильная дата бронирования");
+            throw new IllegalArgumentException("Неправильная дата бронирования");
         }
         return CommentMapper.commentDto(commentsRepository.save(comment));
     }

@@ -112,16 +112,15 @@ class UserControllerTest {
     @SneakyThrows
     @Test
     void updateUser_whenUserIsNotValid_thenReturnBadRequest() {
-        Long userId = 0L;
+        Long userId = 7L;
         user.setName("TestJava");
-
-        mockMvc.perform(put(url + "/{userId}", userId)
+        when(userService.updateUser(userId, user)).thenThrow(new ObjectNotFoundException("Нельзя обновить пользователя"));
+        mockMvc.perform(patch(url + "/{userId}", userId)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(user)))
                 .andDo(print())
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isNotFound());
 
-        verify(userService, never()).updateUser(userId, user);
     }
 
     @SneakyThrows

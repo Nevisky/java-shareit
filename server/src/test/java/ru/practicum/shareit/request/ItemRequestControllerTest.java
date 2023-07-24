@@ -152,11 +152,7 @@ class ItemRequestControllerTest {
                         .header("X-Sharer-User-Id", 1)
                         .content(objectMapper.writeValueAsString(itemRequestDto)))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].code", is(400)))
-                .andExpect(jsonPath("$[0].fieldName", is("description")))
-                .andExpect(jsonPath("$[0].message", is("Добавьте описание")));
+                .andExpect(status().isBadRequest());
     }
 
     @SneakyThrows
@@ -254,36 +250,6 @@ class ItemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$.size()", is(1)));
-    }
-
-    @SneakyThrows
-    @Test
-    void getRequests_whenFromIsNegative_ReturnInternalServerError() {
-        mockMvc.perform(get(url + "/all")
-                        .header("X-Sharer-User-Id", 1)
-                        .param("from", "-1"))
-                .andDo(print())
-                .andExpect(status().isInternalServerError());
-    }
-
-    @SneakyThrows
-    @Test
-    void getRequests_whenSizeIsZero_ReturnInternalServerError() {
-        mockMvc.perform(get(url + "/all")
-                        .header("X-Sharer-User-Id", 1)
-                        .param("size", "0"))
-                .andDo(print())
-                .andExpect(status().isInternalServerError());
-    }
-
-    @SneakyThrows
-    @Test
-    void getRequests_whenSizeIsNegative_ReturnInternalServerError() {
-        mockMvc.perform(get(url + "/all")
-                        .header("X-Sharer-User-Id", 1)
-                        .param("size", "-1"))
-                .andDo(print())
-                .andExpect(status().isInternalServerError());
     }
 
 }

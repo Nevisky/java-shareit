@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -67,6 +68,9 @@ public class ItemController {
                                                      @PositiveOrZero int from,
                                                      @RequestParam(name = "size", defaultValue = "10") @Positive int size) {
         log.info("Найден предмет по тексту запроса");
+        if (text.isBlank() || text.isEmpty()) {
+           return Collections.emptyList();
+        }
         return itemService.getItemsDtoByRequest(text, from, size);
     }
 

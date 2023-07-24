@@ -15,7 +15,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.exception.ValidateStateException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -55,16 +54,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponse saveBooking(Long userId, BookingDto bookingDto) {
-        LocalDateTime start = bookingDto.getStart();
-        LocalDateTime end = bookingDto.getEnd();
         Item item = validateItem(bookingDto.getItemId());
         User user = validateUser(userId);
-
-        if (!end.isAfter(start) || end.equals(start) || start.isBefore(LocalDateTime.now())) {
-            throw new ValidationException("Неправильно указана дата");
-        }
-        if (!validateItem(bookingDto.getItemId()).getAvailable()) {
-            throw new ValidationException("Предмет не доступен для бронироавния");
+        if (!item.getAvailable()) {
+            throw new IllegalArgumentException("Предмет не доступен для бронироавния");
         }
         if (item.getOwner().getId().equals(userId)) {
             throw new ObjectNotFoundException("Нельзя забронировать свою вещь");
@@ -86,10 +79,10 @@ public class BookingServiceImpl implements BookingService {
         }
 
         if (approved && booking.getStatus() == BookingStatus.APPROVED) {
-            throw new ValidationException(String.format("Бронь с id = %d уже существует.",booking.getItem().getId()));
+            throw new IllegalArgumentException(String.format("Бронь с id = %d уже существует.",booking.getItem().getId()));
         }
         if (!approved && booking.getStatus() == BookingStatus.REJECTED) {
-            throw new ValidationException(String.format("Бронь с id = %d уже отменена.",booking.getItem().getId()));
+            throw new IllegalArgumentException(String.format("Бронь с id = %d уже отменена.",booking.getItem().getId()));
         }
         if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
@@ -97,7 +90,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(BookingStatus.REJECTED);
         }
         if (!booking.getItem().getOwner().getId().equals(userId)) {
-            throw new ObjectNotFoundException("Нельзя обновить статус другого пользователя");
+            throw new IllegalArgumentException("Нельзя обновить статус другого пользователя");
         }
 
         bookingRepository.save(booking);
@@ -189,7 +182,7 @@ public class BookingServiceImpl implements BookingService {
         try {
             return BookingState.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException exception) {
-            throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
+            throw new IllegalArgumentException("Unknown state: UNSUPPORTED_STATUS");
         }
     }
 

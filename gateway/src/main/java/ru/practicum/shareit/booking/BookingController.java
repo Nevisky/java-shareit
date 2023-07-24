@@ -7,10 +7,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.util.BookingState;
+import ru.practicum.shareit.exception.ValidateStateException;
+import ru.practicum.shareit.exception.ValidationException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
+import java.time.LocalDateTime;
 
 @Validated
 @RestController
@@ -24,6 +27,11 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader("X-Sharer-User-Id") Long userId,
                                  @Valid @RequestBody BookingDto bookingDto) {
+        if (!(bookingDto.getStart().isAfter(LocalDateTime.now()) &&
+                bookingDto.getEnd().isAfter(LocalDateTime.now()) &&
+                bookingDto.getStart().isBefore(bookingDto.getEnd()))) {
+            throw new ValidationException("Неправильно заданна дата");
+        }
         log.info("Бронирование Booking={}", bookingDto.getId());
         return bookingClient.addBooking(userId, bookingDto);
     }
@@ -51,7 +59,7 @@ public class BookingController {
                                                                   @RequestParam(defaultValue = "20")
                                                                   @Positive int size) {
         BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+                .orElseThrow(() -> new ValidateStateException("Unknown state: " + stateParam));
         log.info("Получение списка всех бронирований пользователя id={}", userId);
         return bookingClient.getBookings(userId, state, from, size);
     }
@@ -64,7 +72,7 @@ public class BookingController {
                                                                      @RequestParam(defaultValue = "10")
                                                                      @Positive int size) {
         BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+                .orElseThrow(() -> new ValidateStateException("Unknown state: " + stateParam));
         log.info("Получение списка бронирований для всех вещей пользователя id={}",userId);
         return bookingClient.getBookingsAllItem(userId, state, from, size);
     }
